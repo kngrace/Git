@@ -3,6 +3,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,6 +48,13 @@ public class BoxPlot extends JPanel {
     /** JPanel Size. */
     private static final Dimension DEFAULT_SIZE = new Dimension(500, 400);
     
+    /** Map. */
+    private static final Map<String, Color> DEFAULT_COLORS = new HashMap<String, Color>() {
+     {
+    	 put("BACKGROUND", Color.white);
+    }};
+    
+    
     /** This is a comment. */
     private static final double[] TEST_ONE = new double[] {0.0, 16.0, 3.0, 6.0, 8.0};
     
@@ -54,7 +63,6 @@ public class BoxPlot extends JPanel {
     
     /** This is a comment. */
     private static final double[] TEST_THREE = new double[] {0.0, 16.0, 3.0, 6.0, 8.0}; 
-    
     
     /** This is a comment. */
     private double myMin;
@@ -71,9 +79,12 @@ public class BoxPlot extends JPanel {
     /** This is a comment. */
     private double myThirdQ;
     
+    /** This is a comment. */
+	private Color myLineColor;
+    
 
     /**
-     * Expects an array of type double in the following order:
+     * Accepts an array of type double in the following order:
      * min, max, firstQ, secondQ, thirdQ.
      * 
      * @param theDoubles the array used to create the boxplot
@@ -85,15 +96,43 @@ public class BoxPlot extends JPanel {
         myFirstQ = theDoubles[2];
         mySecondQ = theDoubles[3];
         myThirdQ = theDoubles[4];
-  
+        this.setName("BoxPlot");
+        
+        super.setBackground(DEFAULT_COLORS.get("BACKGROUND"));
     }
+    
+    
+    /**
+     * Accepts 5 doubles in the following order:
+     * min, max, firstQ, secondQ, thirdQ.
+     * 
+     * @param theDoubles the array used to create the boxplot
+     */
+    public BoxPlot(final double theMin, final double theMax,
+    		final double theFirstQ, final double theSecondQ,
+    		final double theThirdQ) {
+
+        myMin = theMin;
+        myMax = theMax;
+        myFirstQ = theFirstQ;
+        mySecondQ = theSecondQ;
+        myThirdQ = theThirdQ;
+        this.setName("BoxPlot");
+        
+        
+    }
+    
 
     @Override    
     public void paintComponent(final Graphics theGraphics) {
         super.paintComponent(theGraphics);
         
         final Graphics2D g2d =  (Graphics2D) theGraphics;
-       
+        if(myLineColor != null) {
+        	g2d.setColor(myLineColor);        
+        }
+        
+        
         final double offset = 5;
         final double xMin = getWidth() * .10; 
         final double xMax = getWidth() * .90;
@@ -191,6 +230,10 @@ public class BoxPlot extends JPanel {
     }
     
     
+    public void setLineColor(final Color theLineColor) {
+    	myLineColor = theLineColor;
+    }
+    
     
     /** Starts the program. @param theArgs the command line arguments*/
     public static void main(final String[] theArgs) {
@@ -198,9 +241,14 @@ public class BoxPlot extends JPanel {
         frame.setSize(DEFAULT_SIZE);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new BoxPlot(TEST_ONE));
-        frame.setContentPane(new BoxPlot(TEST_TWO));
+        BoxPlot oneBoxPlot = new BoxPlot(TEST_ONE);
+        frame.add(oneBoxPlot); 
+        oneBoxPlot.setLineColor(Color.GREEN);
+        oneBoxPlot.setBackground(Color.BLACK);
+ //       frame.setContentPane(new BoxPlot(TEST_TWO));
         frame.setVisible(true);
+        
+        
     }
     
     
